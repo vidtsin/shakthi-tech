@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+	<menuitem id="menu_employee_training"
+		name="Employee Training planner" parent="hr.menu_hr_root"
+		sequence="10" />
+
+	<record id="sequence_employee_training"
+		model="ir.sequence">
+		<field name="name">Employee training sequence</field>
+		<field name="code">employee.training</field>
+		<field name="prefix">HR/TR/%(range_month)s/%(range_year)s/</field>
+		<field eval="1" name="number_next" />
+		<field eval="1" name="number_increment" />
+		<field eval="True" name="use_date_range" />
+		<field name="padding">3</field>
+	</record>
+
+
+	<record id="view_employee_training_form" model="ir.ui.view">
+		<field name="name">employee.training.form</field>
+		<field name="model">employee.training</field>
+		<field name="arch" type="xml">
+			<form string="Employee Training">
+				<header>
+					<field name="stages" widget="statusbar"
+						statusbar_visible="new,in_progress,feedback,done" />
+					<button name="move_to_in_progress" string="In Progress"
+						type="object" class="oe_highlight"
+						attrs="{'invisible': [('stages', 'not in', ('new'))]}" />
+					<button name="move_to_feedback" string="Feedback"
+						type="object" class="oe_highlight"
+						attrs="{'invisible': [('stages', 'not in', ('in_progress'))]}" />
+					<button name="move_to_done" string="Done" type="object"
+						class="oe_highlight"
+						attrs="{'invisible': [('stages', 'not in', ('feedback'))]}" />
+				</header>
+				<sheet>
+					<h2>
+						<field name="sequence" />
+					</h2>
+					<group>
+						<group>
+							<field name="employee_ids" widget="many2many_tags"
+								required='1' attrs="{'readonly':[('trainer','not in',['new'])]}" />
+							<field name="planned_month_id" required='1'
+								attrs="{'readonly':[('trainer','not in',['new'])]}" />
+							<field name="date_from"
+								attrs="{'invisible': [('stages', 'in',['new'])],'readonly':[('stages','not in',['in_progress'])],'required':[('stages','in',['in_progress'])]}" />
+							<field name="date_to"
+								attrs="{'invisible': [('stages', 'in',['new'])],'readonly':[('stages','not in',['in_progress'])],'required':[('stages','in',['in_progress'])]}" />
+							<field name="duration" readonly="1" attrs="{'invisible': [('stages', 'in',['new'])]}" />	
+						</group>
+						<group>
+							<field name="trainer"
+								attrs="{'readonly':[('trainer','not in',['new'])]}" />
+							<field name="trainer_name"
+								attrs="{'invisible': [('trainer', 'in',['internal'])],'required':[('trainer','in',['external'])],'readonly':[('stages','in',['done'])]}" />
+							<field name="trainer_name_id"
+								attrs="{'invisible': [('trainer', 'in',['external'])],'required':[('trainer','in',['internal'])],'readonly':[('stages','in',['done'])]}" />
+							<field name="training_topic_id"
+								attrs="{'readonly':[('trainer','not in',['new'])]}" />
+							<field name="planned_hours"
+								attrs="{'readonly':[('trainer','not in',['new'])]}" />
+							<field name="effectiveness_of_training" widget="priority" required="1"/>		
+							
+						</group>
+					</group>
+					<notebook>
+						<page string="Training Schedule">
+							<field name='training_line_ids'>
+								<form>
+									<group>
+										<group>
+											<field name="employee_id" readonly="1" />
+											<field name="trainer_id" readonly="1" />
+											<field name="training_topic_id" readonly="1" />
+										</group>
+										<group>
+											<field name="date_from" readonly="1" />
+											<field name="date_to" readonly="1" />
+											<field name="duration" readonly="1" />
+											<field name="supervisor_feedback" />
+										</group>
+									</group>
+								</form>
+								<tree editable="bottom"
+									attrs="{'readonly':[('trainer','in',['done'])]}">
+									<field name="employee_id" readonly="1" />
+									<field name="trainer_id" readonly="1" />
+									<field name="training_topic_id" readonly="1" />
+									<field name="date_from" readonly="1" />
+									<field name="date_to" readonly="1" />
+									<field name="duration" readonly="1" />
+									<field name="supervisor_feedback" />
+								</tree>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="view_employee_training_tree" model="ir.ui.view">
+		<field name="name">employee.training.tree</field>
+		<field name="model">employee.training</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="sequence" />
+				<field name="employee_ids" />
+				<field name="date_from" />
+				<field name="date_to" />
+				<field name="trainer_name_id" />
+				<field name="stages" />
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="view_employee_training_calendar">
+		<field name="name">employee.training.calendar</field>
+		<field name="model">employee.training</field>
+		<field name="priority" eval="2" />
+		<field name="arch" type="xml">
+			<calendar string="Employee training" date_start="date_from"
+				date_end="date_to" color="employee_ids">
+				<field name="sequence" />
+				<!-- <field name="employee_ids" /> -->
+				<field name="date_from" />
+				<field name="date_to" />
+			</calendar>
+		</field>
+	</record>
+
+	<record id="action_employee_training"
+		model="ir.actions.act_window">
+		<field name="name">Employee Training</field>
+		<field name="res_model">employee.training</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form,calendar</field>
+		<!-- <field name="search_view_id" ref="view_job_filter"/> <field name="context">{"search_default_Current":1}</field> -->
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click to create a training schedule.
+			</p>
+		</field>
+	</record>
+
+	<record id="view_individual_employee_training_form"
+		model="ir.ui.view">
+		<field name="name">individual.employee.training.form</field>
+		<field name="model">employee.training.line</field>
+		<field name="arch" type="xml">
+			<form string="Individual Employee Training">
+				<header>
+					<field name="state" widget="statusbar"
+						statusbar_visible="new,done" />
+					<button name="move_to_done" string="Done" type="object"
+						class="oe_highlight"
+						attrs="{'invisible': [('state', 'not in', ('new'))]}" />
+				</header>
+				<sheet>
+					<group>
+						<group>
+							<field name="employee_id" readonly='1' />
+							<field name="trainer_id" readonly='1' />
+							<field name="training_topic_id" readonly='1' />
+						</group>
+						<group>
+							<field name="date_from" readonly='1' />
+							<field name="date_to" readonly='1' />
+							<field name="duration" readonly="1" />
+							<field name="supervisor_feedback" readonly='1' />
+							<field name="employee_feedback" required="1"
+								attrs="{'readonly': [('state', 'in', ('done'))]}" />
+						</group>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="view_individual_employee_training_tree"
+		model="ir.ui.view">
+		<field name="name">individual.employee.training.form</field>
+		<field name="model">employee.training.line</field>
+		<field name="arch" type="xml">
+			<tree string="Individual Employee Training">
+				<field name="employee_id" />
+				<field name="trainer_id" />
+				<field name="training_topic_id" />
+				<field name="date_from" />
+				<field name="date_to" />
+				<field name="duration" />
+				<field name="supervisor_feedback" />
+				<field name="employee_feedback" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="action_individual_employee_training"
+		model="ir.actions.act_window">
+		<field name="name">Individual Employee Training</field>
+		<field name="res_model">employee.training.line</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<!-- <field name="search_view_id" ref="view_job_filter"/> <field name="context">{"search_default_Current":1}</field> -->
+	</record>
+
+	<menuitem id="sub_menu_employee_training"
+		name="Training Schedule" parent="menu_employee_training"
+		action="action_employee_training" sequence="1" />
+
+	<menuitem id="sub_menu_individual_employee_training"
+		name="Individual Schedule"
+		action="action_individual_employee_training"
+		parent="menu_employee_training" sequence="2" />
+</odoo>

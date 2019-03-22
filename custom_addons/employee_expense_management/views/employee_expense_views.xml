@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+	<record id="view_employee_expense_form" model="ir.ui.view">
+		<field name="name">employee.expense.form</field>
+		<field name="model">employee.expense</field>
+		<field name="arch" type="xml">
+			<form string="Employee Expense">
+				<header>
+					<field name="state" widget="statusbar"
+						statusbar_visible="draft,submit,approve,post,done" />
+					<button name="move_to_submited" string="Submitted"
+						type="object" class="oe_highlight"
+						attrs="{'invisible': [('state', 'not in', ('draft'))]}" />
+					<button name="move_to_approved" string="Approved"
+						type="object" class="oe_highlight"
+						attrs="{'invisible': [('state', 'not in', ('submit'))]}" />
+					<button name="move_to_post" string="Post" type="object"
+						class="oe_highlight"
+						attrs="{'invisible': [('state', 'not in', ('approve'))]}" />
+					<button name="move_to_paid" string="Paid" type="object"
+						class="oe_highlight"
+						attrs="{'invisible': [('state', 'not in', ('post'))]}" />
+					<button name="move_to_refused" string="Post" type="object"
+						class="oe_highlight"
+						attrs="{'invisible': [('state', 'not in', ('paid'))]}" />
+				</header>
+				<sheet>
+					<group>
+						<field name="employee_id" />
+						<field name="employee_grade_id" readonly="1" />
+						<field name="city_type" />
+					</group>
+					<notebook>
+						<page string="Expense Details">
+							<field name="employee_expense_ids"
+								context="{'city_type':city_type}">
+								<tree editable="bottom">
+									<field name="product_id" />
+									<field name="unit_price" />
+									<field name="quantity" />
+									<field name="amount" />
+								</tree>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="view_employee_expense_tree" model="ir.ui.view">
+		<field name="name">employee.expense.tree</field>
+		<field name="model">employee.expense</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="employee_id" />
+				<field name="employee_grade_id" />
+				<field name="city_type" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="action_employee_expense"
+		model="ir.actions.act_window">
+		<field name="name">Employee Expense</field>
+		<field name="res_model">employee.expense</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click to create a Employee Expense.
+			</p>
+		</field>
+	</record>
+
+	<menuitem id="menu_employee_expense" name="Employee Expenses"
+		sequence="1" parent="hr_expense.menu_hr_expense_root" />
+	<menuitem id="sub_employee_expense" name="Employee Expense"
+		action="action_employee_expense" parent="menu_employee_expense"
+		sequence="1" />
+
+</odoo>

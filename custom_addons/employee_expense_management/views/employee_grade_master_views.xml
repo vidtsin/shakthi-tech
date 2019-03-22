@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+	<record id="view_employee_grade_master_form" model="ir.ui.view">
+		<field name="name">employee.grade.master.form</field>
+		<field name="model">employee.grade</field>
+		<field name="arch" type="xml">
+			<form string="Employee Grade">
+				<sheet>
+					<group>
+						<group>
+							<field name="name" />
+						</group>
+					</group>
+					<notebook>
+						<page string="Employee Grade">
+							<field name="employee_grade_ids">
+								<form>
+									<group>
+										<field name="product_id" />
+										<field name="type" />
+										<field name="amount" />
+									</group>
+								</form>
+								<tree>
+									<field name="product_id" />
+									<field name="type" />
+									<field name="amount" />
+								</tree>
+							</field>
+						</page>
+					</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="view_employee_grade_master_tree" model="ir.ui.view">
+		<field name="name">employee.grade.tree</field>
+		<field name="model">employee.grade</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name" />
+			</tree>
+		</field>
+	</record>
+
+	<record id="action_employee_grade_master"
+		model="ir.actions.act_window">
+		<field name="name">Employee Grade</field>
+		<field name="res_model">employee.grade</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click to create a Employee Grade.
+			</p>
+		</field>
+	</record>
+
+	<menuitem id="menu_employee_grade_master"
+		name="Employee Grade Master" action="action_employee_grade_master"
+		parent="hr.menu_human_resources_configuration" sequence="11" />
+
+</odoo>

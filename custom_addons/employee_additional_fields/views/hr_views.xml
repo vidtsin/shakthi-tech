@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>	
+		<record model="ir.sequence" id="employee_code">
+			<field name="name">Employee Code</field>
+			<field name="code">hr.employee</field>
+			<field name="prefix">EMP</field>
+			<field name="padding">2</field>
+		</record>	
+		<record id="view_employee_form_additional fields" model="ir.ui.view">
+			<field name="name">hr.view_employee_form</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='image']" position="before">
+					<h2>
+						<field name="emp_code" readonly="1" />
+					</h2>
+				</xpath>
+				<xpath expr="//field[@name='category_ids']" position="after">
+					<group>
+						<group>
+							<field name="working_unit" options="{'no_create': True,'no_open': True}" />
+							<!-- <field name="grade" options="{'no_create': True,'no_open': True}" /> -->
+							<field name="grade" />
+						</group>
+						<group></group>
+					</group>
+				</xpath>
+				<xpath expr="//field[@name='children']" position="after">
+					<field name="blood_group" />
+					<field name="religion" />
+				</xpath>
+				<xpath expr="//field[@name='identification_id']" position="after">
+					<field name="aadhar_number" />
+				</xpath>
+				<xpath expr="//notebook/page[2]/group/group[2]" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+				<xpath expr="//notebook/page[2]/group/group[3]" position="before">
+					<group string="Address Informations">
+						<group>
+							<label for="street_permanent_address" string="Permanent Address"/>
+		                    <div class="o_address_format">
+		                        <field name="street_permanent_address" placeholder="Street..." class="o_address_street"/>
+		                        <field name="street1_permanent_address" placeholder="Street 2..." class="o_address_street"/>
+		                        <field name="city_permanent_address" placeholder="City" class="o_address_city"/>
+		                        <field name="state_id_permanent_address" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+		                        <field name="zip_permanent_address" placeholder="ZIP" class="o_address_zip"/>
+		                        <field name="country_id_permanent_address" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+		                    </div>
+		                </group>
+						<group>
+							<label for="street_present_address" string="Present Address"/>
+		                    <div class="o_address_format">
+		                        <field name="street_present_address" placeholder="Street..." class="o_address_street"/>
+		                        <field name="street1_present_address" placeholder="Street 2..." class="o_address_street"/>
+		                        <field name="city_present_address" placeholder="City" class="o_address_city"/>
+		                        <field name="state_id_present_address" class="o_address_state" placeholder="State" options='{"no_open": True}'/>
+		                        <field name="zip_present_address" placeholder="ZIP" class="o_address_zip"/>
+		                        <field name="country_id_present_address" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'/>
+		                    </div>
+		                </group>
+		            </group>
+				</xpath>
+				<xpath expr="//notebook/page[@name='hr_settings']/group/group[2]" position="after">
+					<group string="PF Details">
+						<field name="epf_number" />
+						<field name="uan_number" />
+					</group>
+					<group string="ESI Details">
+						<field name="esi_number" />
+						<field name="esi_branch" />
+						<field name="esi_dispensary" />
+						</group>
+				</xpath>
+				<xpath expr="//notebook" position="inside">
+					<page string="Experience">
+						<group string="Academic Experience">
+						</group>
+						<field name="academic_experience_ids">
+							<tree editable="bottom">
+								<field name="qualification" />
+								<field name="institution" />
+								<field name="yop" />
+								<field name="percentage" />
+							</tree>
+						</field>
+						<group string="Professional Experience">
+						</group>
+						<field name="professional_experience_ids">
+							<tree editable="bottom">
+								<field name="company_name" />
+								<field name="designation" />
+								<field name="year_of_service" />
+							</tree>
+						</field>
+					</page>
+				</xpath>
+				<xpath expr="//notebook" position="inside">
+					<page string="Family Informations">
+						<group string="Family Informations">
+						</group>
+						<field name="family_information_ids">
+							<tree editable="bottom">
+								<field name="name" />
+								<field name="relationship" options="{'no_create': True,'no_open': True}" />
+							</tree>
+						</field>
+					</page>
+				</xpath>
+				<xpath expr="//notebook" position="inside">
+					<page string="Benifits">
+						<group string="Benifits">
+						</group>
+						<field name="employee_benifits_ids">
+							<tree editable="bottom">
+								<field name="name" />
+								<field name="expected_date" />
+							</tree>
+						</field>
+					</page>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_work_unit_form" model="ir.ui.view">
+			<field name="name">work.unit.form</field>
+			<field name="model">work.unit</field>
+			<field name="arch" type="xml">
+				<form string="Working Unit">
+					<group>
+						<field name="name" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_work_unit_list" model="ir.ui.view">
+			<field name="name">work.unit.list</field>
+			<field name="model">work.unit</field>
+			<field eval="8" name="priority" />
+			<field name="arch" type="xml">
+				<tree string="Working Unit">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="open_view_work_unit_form" model="ir.actions.act_window">
+			<field name="name">Working Unit</field>
+			<field name="res_model">work.unit</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_view_work_unit_form" action="open_view_work_unit_form"
+			parent="hr.menu_human_resources_configuration" sequence="3" />
+
+		<record id="view_blood_group_form" model="ir.ui.view">
+			<field name="name">blood.group.form</field>
+			<field name="model">blood.group</field>
+			<field name="arch" type="xml">
+				<form string="Blood Group">
+					<group>
+						<field name="name" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_blood_group_list" model="ir.ui.view">
+			<field name="name">blood.group.list</field>
+			<field name="model">blood.group</field>
+			<field eval="8" name="priority" />
+			<field name="arch" type="xml">
+				<tree string="Blood Group">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="open_view_blood_group_form" model="ir.actions.act_window">
+			<field name="name">Blood Group</field>
+			<field name="res_model">blood.group</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_view_blood_group_form" action="open_view_blood_group_form"
+			parent="hr.menu_human_resources_configuration" sequence="4" />
+
+		<record id="view_religion_form" model="ir.ui.view">
+			<field name="name">employee.religion.form</field>
+			<field name="model">employee.religion</field>
+			<field name="arch" type="xml">
+				<form string="Religion">
+					<group>
+						<field name="name" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_religion_list" model="ir.ui.view">
+			<field name="name">employee.religion.list</field>
+			<field name="model">employee.religion</field>
+			<field eval="8" name="priority" />
+			<field name="arch" type="xml">
+				<tree string="Religion">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="open_view_religion_form" model="ir.actions.act_window">
+			<field name="name">Religion</field>
+			<field name="res_model">employee.religion</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_view_religion_form" action="open_view_religion_form"
+			parent="hr.menu_human_resources_configuration" sequence="5" />
+
+		<record id="view_family_relation_form" model="ir.ui.view">
+			<field name="name">family.relation.form</field>
+			<field name="model">family.relation</field>
+			<field name="arch" type="xml">
+				<form string="Religion">
+					<group>
+						<field name="name" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_family_relation_list" model="ir.ui.view">
+			<field name="name">family.relation.list</field>
+			<field name="model">family.relation</field>
+			<field eval="8" name="priority" />
+			<field name="arch" type="xml">
+				<tree string="Religion">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="open_view_family_relation_form" model="ir.actions.act_window">
+			<field name="name">Relationship</field>
+			<field name="res_model">family.relation</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_view_family_relation_form" action="open_view_family_relation_form"
+			parent="hr.menu_human_resources_configuration" sequence="6" />
+	</data>
+</odoo>
